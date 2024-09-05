@@ -97,7 +97,7 @@ function getWeather() {
 
 function getHourlyData(hourlyData, dayIndex, dayDate) {
     const startIndex = dayIndex * 24;
-    const hourlyChunks = 3;
+    const hourlyChunks = 2;
 
     let hourlyDisplayHtml = `<h2>Hourly Forecast for ${dayDate}</h2>`; // Updated title with actual date
     hourlyDisplayHtml += '<div class="hourly-data">';
@@ -126,9 +126,34 @@ function getHourlyData(hourlyData, dayIndex, dayDate) {
     document.getElementById('hourly-display').innerHTML = hourlyDisplayHtml;
 }
 
-document.getElementById('get-weather').addEventListener('click', getWeather);
-document.getElementById('city-input').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        getWeather();
-    }
+function setupTabs() {
+    const tabs = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs
+            tabs.forEach(btn => btn.classList.remove('active'));
+            // Add active class to the clicked tab
+            this.classList.add('active');
+
+            // Hide all tab contents
+            tabContents.forEach(content => content.classList.remove('active'));
+            // Show the selected tab content
+            const targetTab = this.getAttribute('data-tab');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupTabs();
+
+    document.getElementById('get-weather').addEventListener('click', getWeather);
+    document.getElementById('city-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            getWeather();
+        }
+    });
 });
+

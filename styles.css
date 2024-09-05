@@ -6,6 +6,43 @@ body {
     padding: 20px;
 }
 
+/* Tab container styling */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Tab button styles */
+.tab-button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #ddd;
+    border: none;
+    border-radius: 5px 5px 0 0;
+}
+
+.tab-button.active {
+    background-color: #fff;
+    border-bottom: 2px solid #fff;
+}
+
+/* Tab content styling */
+.tab-content {
+    display: none;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0 0 5px 5px;
+}
+
+/* Display the active tab */
+.tab-content.active {
+    display: block;
+}
+
 /* Weather display container */
 #weather-display, #hourly-display {
     margin-top: 20px;
@@ -21,25 +58,25 @@ input, button {
 /* Forecast container using flexbox to make all days in one row */
 .forecast-container {
     display: flex;
-    flex-wrap: nowrap; /* Keeps all forecast days in one row */
-    overflow-x: auto;  /* Horizontal scroll if content overflows */
-    gap: 20px;         /* Space between forecast items */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
 }
 
 /* Individual forecast day card */
 .forecast-day {
-    flex: 0 0 auto;    /* Prevent shrinking, maintain width */
+    flex: 0 0 auto;
     border: 1px solid #ddd;
     padding: 10px;
     background-color: #fff;
     border-radius: 5px;
     text-align: center;
-    min-width: 150px;  /* Minimum width for each forecast card */
-    cursor: pointer;   /* Make the day clickable */
+    min-width: 150px;
+    cursor: pointer;
 }
 
 .forecast-day:hover {
-    background-color: #ececec; /* Highlight on hover */
+    background-color: #ececec;
 }
 
 /* Hourly data container styling */
