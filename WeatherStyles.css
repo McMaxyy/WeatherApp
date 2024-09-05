@@ -1,0 +1,61 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Weather display container */
+#weather-display, #hourly-display {
+    margin-top: 20px;
+}
+
+/* Input and button styles */
+input, button {
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+/* Forecast container using flexbox to make all days in one row */
+.forecast-container {
+    display: flex;
+    flex-wrap: nowrap; /* Keeps all forecast days in one row */
+    overflow-x: auto;  /* Horizontal scroll if content overflows */
+    gap: 20px;         /* Space between forecast items */
+}
+
+/* Individual forecast day card */
+.forecast-day {
+    flex: 0 0 auto;    /* Prevent shrinking, maintain width */
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    text-align: center;
+    min-width: 150px;  /* Minimum width for each forecast card */
+    cursor: pointer;   /* Make the day clickable */
+}
+
+.forecast-day:hover {
+    background-color: #ececec; /* Highlight on hover */
+}
+
+/* Hourly data container styling */
+.hourly-data {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.hourly-block {
+    flex: 0 0 150px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    text-align: center;
+}
