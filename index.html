@@ -3,31 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>Weathery</title>
     <link rel="stylesheet" href="styles.css?v=1.0">
 </head>
 <body>
-    <h1>Weather App</h1>
+    <header>
+        <img src="assets/SunLeft.png" alt="Sun Icon Left" class="sun-icon">
+        <h1>Weathery</h1>
+        <img src="assets/SunRight.png" alt="Sun Icon Right" class="sun-icon">
+    </header>
 
-    <!-- Tab navigation -->
     <div class="tab-container">
         <button class="tab-button active" data-tab="weather-tab">Weather</button>
         <button class="tab-button" data-tab="radar-tab">Radar Image</button>
     </div>
 
-    <!-- Weather Section -->
     <div id="weather-tab" class="tab-content active">
-        <input type="text" id="city-input" placeholder="Enter city name">
-        <button id="get-weather">Get Weather</button>
+        <div id="search-section">
+            <input type="text" id="city-input" placeholder="Enter city name">
+            <button id="get-weather">Search</button>
+        </div>
         <div id="weather-display"></div>
         <div id="hourly-display"></div>
     </div>
 
-    <!-- Radar Image Section -->
     <div id="radar-tab" class="tab-content">
         <h2>Radar Image</h2>
         <img id="radar-image-1" src="https://meteo.arso.gov.si/uploads/probase/www/observ/radar/si0-rm.gif" alt="Radar image">
-        <br></br><br></br>
+        <br><br>
         <h2>Radar Image (Last 90 Minutes)</h2>
         <img id="radar-image-2" src="https://meteo.arso.gov.si/uploads/probase/www/observ/radar/si0-rm-anim.gif" alt="Radar image (last 90 minutes)">
     </div>

@@ -1,14 +1,13 @@
 function getWeather() {
     const city = document.getElementById('city-input').value;
 
-    // Fetch latitude and longitude using the Open-Meteo Geocoding API or any geocoding service
     fetch(`https://nominatim.openstreetmap.org/search?city=${city}&format=json`)
         .then(response => response.json())
         .then(locationData => {
             if (locationData.length > 0) {
                 const { lat, lon } = locationData[0];
 
-                const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=apparent_temperature,precipitation_probability,temperature_2m,relative_humidity_2m,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,daylight_duration&timezone=auto`;
+                const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=apparent_temperature,precipitation_probability,temperature_2m,relative_humidity_2m,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,daylight_duration,weathercode&timezone=auto`;
 
                 fetch(apiUrl)
                     .then(response => {
@@ -27,16 +26,19 @@ function getWeather() {
 
                         const daylightHours = Math.floor(daylight / 3600);
                         const daylightMinutes = Math.floor((daylight % 3600) / 60);
-                        let wmo = "";
 
-                        if (weatherCode >= 0 && weatherCode <= 2)
-                            wmo = "Safe";
-                        else if (weatherCode >= 3 && weatherCode <= 7)
-                            wmo = "Not nice";
-                        else if (weatherCode >= 8)
-                            wmo = "Hell";
+                        let iconSrc = '', wCode = '';
+                        if (weatherCode >= 0 && weatherCode <= 2) {
+                            iconSrc = 'assets/Sunshine.png'; // Sunny
+                            wCode = "Nice";
+                        } else if (weatherCode >= 3 && weatherCode <= 7) {
+                            iconSrc = 'assets/Clouds.png'; // Cloudy
+                            wCode = "Somewhat okay";
+                        } else if (weatherCode >= 8) {
+                            iconSrc = 'assets/Rain.png'; // Rainy
+                            wCode = "Not nice";
+                        }
 
-                        // Get 7-day forecast data
                         const dailyData = weatherData.daily;
                         const dailyForecasts = dailyData.time.map((date, index) => {
                             const maxTemp = dailyData.temperature_2m_max[index];
@@ -46,9 +48,20 @@ function getWeather() {
                             const daylightHours = Math.floor(daylight / 3600);
                             const daylightMinutes = Math.floor((daylight % 3600) / 60);
 
+                            let forecastIcon = '';
+                            const forecastWeatherCode = dailyData.weathercode[index];
+                            if (forecastWeatherCode >= 0 && forecastWeatherCode <= 2) {
+                                forecastIcon = 'assets/Sunshine.png'; // Sunny
+                            } else if (forecastWeatherCode >= 3 && forecastWeatherCode <= 7) {
+                                forecastIcon = 'assets/Clouds.png'; // Cloudy
+                            } else if (forecastWeatherCode >= 8) {
+                                forecastIcon = 'assets/Rain.png'; // Rainy
+                            }
+
                             return `
                                 <div class="forecast-day" data-index="${index}" data-date="${new Date(date).toLocaleDateString('en-US', {weekday:'long'})}">
                                     <h3>${new Date(date).toLocaleDateString('en-US', {weekday:'long'})}</h3>
+                                    <img src="${forecastIcon}" alt="Weather icon for ${new Date(date).toLocaleDateString('en-US', {weekday:'long'})}">
                                     <p>Max Temp: ${maxTemp}°C</p>
                                     <p>Min Temp: ${minTemp}°C</p>
                                     <p>Precipitation: ${precipitation} mm</p>
@@ -57,21 +70,24 @@ function getWeather() {
                             `;
                         }).join('');
 
-                        // Update the weather display, wrapping forecasts in the forecast-container div
                         const weatherInfo = `
+                            <div class="weather-section">
                             <h2>Weather in ${city}</h2>
+                            <img src="${iconSrc}" alt="Current weather icon">
                             <p>Temperature: ${currentWeather.temperature}°C</p>
                             <p>Feels like: ${apparentTemp}°C</p>
-                            <p>Condition: ${weatherCode} (${wmo})</p>
+                            <p>Condition: ${weatherCode} (${wCode})</p>
                             <p>Wind Speed: ${currentWeather.windspeed} km/h</p>
                             <p>Humidity: ${humidity}% (${currentPrecip}% chance of a bad time)</p>
                             <p>Daylight Duration: ${daylightHours} hours ${daylightMinutes} minutes</p>
+                            </div>
+                            <div class="weather-section">
                             <h2>7-Day Forecast</h2>
                             <div class="forecast-container">${dailyForecasts}</div>
+                            </div>
                         `;
                         document.getElementById('weather-display').innerHTML = weatherInfo;
 
-                        // Attach click event listener to each forecast day
                         const forecastDays = document.querySelectorAll('.forecast-day');
                         forecastDays.forEach(day => {
                             day.addEventListener('click', function() {
@@ -99,7 +115,7 @@ function getHourlyData(hourlyData, dayIndex, dayDate) {
     const startIndex = dayIndex * 24;
     const hourlyChunks = 2;
 
-    let hourlyDisplayHtml = `<h2>Hourly Forecast for ${dayDate}</h2>`; // Updated title with actual date
+    let hourlyDisplayHtml = `<div class="hourly-forecast"><h2>Hourly Forecast for ${dayDate}</h2>`;
     hourlyDisplayHtml += '<div class="hourly-data">';
 
     for (let i = startIndex; i < startIndex + 24; i += hourlyChunks) {
@@ -109,6 +125,7 @@ function getHourlyData(hourlyData, dayIndex, dayDate) {
         const windSpeed = hourlyData.windspeed_10m[i];
         const precipitation = hourlyData.precipitation_probability[i];
         const apparentTemp = hourlyData.apparent_temperature[i];
+        const dateDay = dayDate;
 
         hourlyDisplayHtml += `
             <div class="hourly-block">
@@ -132,14 +149,10 @@ function setupTabs() {
 
     tabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            // Remove active class from all tabs
             tabs.forEach(btn => btn.classList.remove('active'));
-            // Add active class to the clicked tab
             this.classList.add('active');
 
-            // Hide all tab contents
             tabContents.forEach(content => content.classList.remove('active'));
-            // Show the selected tab content
             const targetTab = this.getAttribute('data-tab');
             document.getElementById(targetTab).classList.add('active');
         });
